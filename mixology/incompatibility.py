@@ -1,3 +1,4 @@
+from typing import Any
 from typing import Dict
 from typing import Generator
 from typing import Hashable
@@ -149,7 +150,7 @@ class Incompatibility:
             return "{} is {}".format(self._terms[0].package, self._terms[0].constraint)
         return None 
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         cause_string = self.handle_cause()
         if cause_string is not None:
             return cause_string
@@ -217,7 +218,7 @@ class Incompatibility:
 
     def and_to_string(
         self, other, details, this_line, other_line
-    ):  # type: (Incompatibility, dict, int, int) -> str
+    ):  # type: (Incompatibility, Dict[Any, Any], int, int) -> str
         requires_both = self._try_requires_both(other, details, this_line, other_line)
         if requires_both is not None:
             return requires_both
@@ -247,7 +248,7 @@ class Incompatibility:
 
     def _try_requires_both(
         self, other, details, this_line, other_line
-    ):  # type: (Incompatibility, dict, int, int) -> Optional[str]
+    ):  # type: (Incompatibility, Dict[Any, Any], int, int) -> Optional[str]
         if len(self._terms) == 1 or len(other.terms) == 1:
             return None
 
@@ -293,7 +294,7 @@ class Incompatibility:
 
     def _try_requires_through(
         self, other, details, this_line, other_line
-    ):  # type: (Incompatibility, dict, int, int) -> Optional[str]
+    ):  # type: (Incompatibility, Dict[Any, Any], int, int) -> Optional[str]
         if len(self._terms) == 1 or len(other.terms) == 1:
             return None
 
@@ -375,7 +376,7 @@ class Incompatibility:
 
     def _try_requires_forbidden(
         self, other, details, this_line, other_line
-    ):  # type: (Incompatibility, dict, int, int) -> Optional[str]
+    ):  # type: (Incompatibility, Dict[Any, Any], int, int) -> Optional[str]
         if len(self._terms) != 1 and len(other.terms) != 1:
             return None
 
@@ -442,5 +443,5 @@ class Incompatibility:
 
         return found
 
-    def __repr__(self):
+    def __repr__(self):  # type: () -> str
         return "<{} {}>".format(self.__class__.__name__, str(self))

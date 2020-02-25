@@ -324,7 +324,7 @@ class VersionSolver:
 
         # Prefer packages with as few remaining versions as possible,
         # so that if a conflict is necessary it's forced quickly.
-        def _get_min(term):
+        def _get_min(term):  # type: (Term) -> int
             return len(
                 self._source.versions_for(term.package, term.constraint.constraint)
             )

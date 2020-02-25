@@ -13,10 +13,10 @@ class SolverFailure(Exception):
         self._incompatibility = incompatibility
 
     @property
-    def message(self):
+    def message(self):  # type: () -> str
         return str(self)
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         return _Writer(self._incompatibility).write()
 
 
@@ -29,7 +29,7 @@ class _Writer:
 
         self._count_derivations(self._root)
 
-    def write(self):
+    def write(self):  # type: () -> str
         buffer = []
 
         required_python_version = None
@@ -89,7 +89,7 @@ class _Writer:
 
     def _visit(
         self, incompatibility, details_for_incompatibility, conclusion=False
-    ):  # type: (Incompatibility, Dict, bool) -> None
+    ):  # type: (Incompatibility, Dict[Any, Any], bool) -> None
         numbered = conclusion or self._derivations[incompatibility] > 1
         conjunction = "So," if conclusion or incompatibility == self._root else "And"
         incompatibility_string = str(incompatibility)

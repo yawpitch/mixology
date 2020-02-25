@@ -1,3 +1,7 @@
+from typing import Any
+
+Incompatibility = Any
+
 class IncompatibilityCause(Exception):
     """
     The reason and Incompatibility's terms are incompatible.
@@ -35,19 +39,19 @@ class ConflictCause(IncompatibilityCause):
     during conflict resolution.
     """
 
-    def __init__(self, conflict, other):
+    def __init__(self, conflict, other):  # type: (Incompatibility, Incompatibility) -> None
         self._conflict = conflict
         self._other = other
 
     @property
-    def conflict(self):
+    def conflict(self):  # type: () -> Incompatibility
         return self._conflict
 
     @property
-    def other(self):
+    def other(self):  # type: () -> Incompatibility
         return self._other
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         return str(self._conflict)
 
 
@@ -57,9 +61,9 @@ class PackageNotFoundCause(IncompatibilityCause):
     source.
     """
 
-    def __init__(self, error):
+    def __init__(self, error):  # type: (Incompatibility) -> None
         self._error = error
 
     @property
-    def error(self):
+    def error(self):  # type: () -> Incompatibility
         return self._error

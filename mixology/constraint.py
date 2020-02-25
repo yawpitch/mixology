@@ -87,7 +87,7 @@ class Constraint(object):
 
         return other.package == self.package and other.constraint == self.constraint
 
-    def __hash__(self):  # type () -> int
+    def __hash__(self):  # type: () -> int
         return hash(self.package) ^ hash(self.constraint)
 
     def to_string(self, allow_every=False):  # type: (bool) -> str
@@ -100,5 +100,5 @@ class Constraint(object):
             self.package, "*" if self.is_any() else str(self.constraint)
         )
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         return self.to_string()

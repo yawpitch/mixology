@@ -17,8 +17,8 @@ class Union(object):
         return self._ranges
 
     @classmethod
-    def of(cls, *ranges):
-        flattened = []
+    def of(cls, *ranges):  # type: (*_Union[mixology.range.Range, Union]) -> _Union[mixology.range.Range, Union]
+        flattened = []  # type: List[mixology.range.Range]
         for constraint in ranges:
             if constraint.is_empty():
                 continue
@@ -37,26 +37,29 @@ class Union(object):
 
         flattened.sort()
 
-        merged = []
+        merged = []  # type: List[mixology.range.Range]
         for constraint in flattened:
             # Merge this constraint with the previous one, but only if they touch.
             if not merged or (
                 not merged[-1].allows_any(constraint)
+                and isinstance(merged[-1], mixology.range.Range)
                 and not merged[-1].is_adjacent_to(constraint)
             ):
                 merged.append(constraint)
             else:
-                merged[-1] = merged[-1].union(constraint)
+                union = merged[-1].union(constraint)
+                assert isinstance(union, mixology.range.Range)
+                merged[-1] = union
 
         if len(merged) == 1:
             return merged[0]
 
         return Union(*merged)
 
-    def is_empty(self):
+    def is_empty(self):  # type: () -> bool
         return False
 
-    def is_any(self):
+    def is_any(self):  # type: () -> bool
         return False
 
     def allows_all(self, other):  # type: (_Union[mixology.range.Range, Union]) -> bool
@@ -125,18 +128,19 @@ class Union(object):
     ):  # type: (_Union[mixology.range.Range, Union]) -> _Union[mixology.range.Range, Union]
         our_ranges = iter(self._ranges)
         their_ranges = iter(self._ranges_for(other))
-        new_ranges = []
+        new_ranges = []  # type: List[_Union[mixology.range.Range, Union]]
 
         state = {
             "current": next(our_ranges, None),
             "their_range": next(their_ranges, None),
         }
 
-        def their_next_range():
+        def their_next_range():  # type: () -> bool
             state["their_range"] = next(their_ranges, None)
             if state["their_range"]:
                 return True
 
+            assert state["current"] is not None
             new_ranges.append(state["current"])
             our_current = next(our_ranges, None)
             while our_current:
@@ -145,8 +149,9 @@ class Union(object):
 
             return False
 
-        def our_next_range(include_current=True):
+        def our_next_range(include_current=True):  # type: (bool) -> bool
             if include_current:
+                assert state["current"] is not None
                 new_ranges.append(state["current"])
 
             our_current = next(our_ranges, None)
@@ -202,7 +207,7 @@ class Union(object):
         if not new_ranges:
             return mixology.range.EmptyRange()
 
-        if len(new_ranges) == 1:
+        if len(new_ranges) == 1 and new_ranges[0] is not None:
             return new_ranges[0]
 
         return Union.of(*new_ranges)
@@ -226,17 +231,17 @@ class Union(object):
 
         return [constraint]
 
-    def __eq__(self, other):
+    def __eq__(self, other):  # type: (object) -> bool
         if not isinstance(other, Union):
             return False
 
         return self._ranges == other.ranges
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         if self.excludes_single_version():
             return "!={}".format(mixology.range.Range().difference(self))
 
         return " || ".join([str(r) for r in self._ranges])
 
-    def __repr__(self):
+    def __repr__(self):  # type: () -> str
         return "<Union {}>".format(str(self))

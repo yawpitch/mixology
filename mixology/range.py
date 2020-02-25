@@ -24,23 +24,23 @@ class Range(object):
         self._max = max
         self._include_min = include_min
         self._include_max = include_max
-        self._hash = None
+        self._hash = None  # type: Optional[int]
         self._string = string
 
     @property
-    def min(self):
+    def min(self):  # type: () -> Optional[Any]
         return self._min
 
     @property
-    def max(self):
+    def max(self):  # type: () -> Optional[Any]
         return self._max
 
     @property
-    def include_min(self):
+    def include_min(self):  # type: () -> bool
         return self._include_min
 
     @property
-    def include_max(self):
+    def include_max(self):  # type: () -> bool
         return self._include_max
 
     @property
@@ -306,16 +306,24 @@ class Range(object):
             and self._include_max == other.include_max
         )
 
-    def __lt__(self, other):
+    def __lt__(self, other):  # type: (object) -> bool
+        if not isinstance(other, Range):
+            return NotImplemented
         return self._cmp(other) < 0
 
-    def __le__(self, other):
+    def __le__(self, other):  # type: (object) -> bool
+        if not isinstance(other, Range):
+            return NotImplemented
         return self._cmp(other) <= 0
 
-    def __gt__(self, other):
+    def __gt__(self, other):  # type: (object) -> bool
+        if not isinstance(other, Range):
+            return NotImplemented
         return self._cmp(other) > 0
 
-    def __ge__(self, other):
+    def __ge__(self, other):  # type: (object) -> bool
+        if not isinstance(other, Range):
+            return NotImplemented
         return self._cmp(other) >= 0
 
     def _cmp(self, other):  # type: (Range) -> int
@@ -352,7 +360,7 @@ class Range(object):
 
         return 0
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         if self._string is not None:
             return self._string
 
@@ -376,10 +384,10 @@ class Range(object):
 
         return text
 
-    def __repr__(self):
+    def __repr__(self):  # type: () -> str
         return "<Range ({})>".format(str(self))
 
-    def __hash__(self):
+    def __hash__(self):  # type: () -> int
         if self._hash is None:
             self._hash = (
                 hash(self.min)

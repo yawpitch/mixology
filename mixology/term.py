@@ -180,8 +180,8 @@ class Term(object):
 
         return "not {}".format(self.constraint)
 
-    def __str__(self):
+    def __str__(self):  # type: () -> str
         return self.to_string()
 
-    def __repr__(self):
+    def __repr__(self):  # type: () -> str
         return "<Term {}>".format(str(self))

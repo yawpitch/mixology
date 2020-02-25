@@ -31,7 +31,7 @@ class Assignment(Term):
         return self._index
 
     @property
-    def cause(self):  # type: () -> Incompatibility
+    def cause(self):  # type: () -> Optional[Incompatibility]
         return self._cause
 
     @classmethod

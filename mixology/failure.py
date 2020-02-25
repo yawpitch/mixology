@@ -1,6 +1,8 @@
 from typing import Dict
 from typing import List
 from typing import Tuple
+from typing import Optional
+from typing import Any
 
 from .incompatibility import Incompatibility
 from .incompatibility_cause import ConflictCause
@@ -22,7 +24,7 @@ class _Writer:
     def __init__(self, root):  # type: (Incompatibility) -> None
         self._root = root
         self._derivations = {}  # type: Dict[Incompatibility, int]
-        self._lines = []  # type: List[Tuple[str, int]]
+        self._lines = []  # type: List[Tuple[str, Optional[int]]]
         self._line_numbers = {}  # type: Dict[Incompatibility, int]
 
         self._count_derivations(self._root)
@@ -92,8 +94,10 @@ class _Writer:
         conjunction = "So," if conclusion or incompatibility == self._root else "And"
         incompatibility_string = str(incompatibility)
 
+        assert isinstance(incompatibility.cause, ConflictCause)
         cause = incompatibility.cause  # type: ConflictCause
-        details_for_cause = {}
+        # TODO: INVESTIGATE IF THIS DICT WILL EVER BE POPULATED
+        details_for_cause = {}  # type: Dict[Any, Any]
         if isinstance(cause.conflict.cause, ConflictCause) and isinstance(
             cause.other.cause, ConflictCause
         ):
@@ -116,7 +120,7 @@ class _Writer:
                     with_line = cause.conflict
                     without_line = cause.other
                     line = conflict_line
-                else:
+                elif other_line is not None:
                     with_line = cause.other
                     without_line = cause.conflict
                     line = other_line
@@ -234,6 +238,7 @@ class _Writer:
         if self._derivations[incompatibility] > 1:
             return False
 
+        assert isinstance(incompatibility.cause, ConflictCause)
         cause = incompatibility.cause  # type: ConflictCause
         if isinstance(cause.conflict.cause, ConflictCause) and isinstance(
             cause.other.cause, ConflictCause

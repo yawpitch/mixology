@@ -9,11 +9,11 @@ class Union(object):
     An union of Ranges.
     """
 
-    def __init__(self, *ranges):
+    def __init__(self, *ranges):  # type: (*mixology.range.Range) -> None
         self._ranges = list(ranges)
 
     @property
-    def ranges(self):
+    def ranges(self):  # type: () -> List[mixology.range.Range]
         return self._ranges
 
     @classmethod
@@ -158,8 +158,13 @@ class Union(object):
             return True
 
         while True:
+
             if state["their_range"] is None:
                 break
+
+            if state["current"] is None:
+                break
+
 
             if state["their_range"].is_strictly_lower(state["current"]):
                 if not their_next_range():

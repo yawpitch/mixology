@@ -18,8 +18,8 @@ class Term(object):
         self._constraint = constraint
         self._package = constraint.package
         self._positive = is_positive
-        self._normalized_constraint = None
-        self._empty = None
+        self._normalized_constraint = None  # type: Optional[Constraint]
+        self._empty = None  # type: Optional[bool]
 
     @property
     def inverse(self):  # type: () -> Term
@@ -39,7 +39,6 @@ class Term(object):
             self._normalized_constraint = (
                 self.constraint if self.is_positive() else self.constraint.inverse
             )
-
         return self._normalized_constraint
 
     def is_positive(self):  # type: () -> bool
@@ -114,7 +113,7 @@ class Term(object):
                 # not foo ^1.5.0 is a superset of not foo ^1.0.0
                 return SetRelation.OVERLAPPING
 
-    def intersect(self, other):  # type: (Term) -> Term
+    def intersect(self, other):  # type: (Term) -> Optional[Term]
         """
         Returns a Term that represents the packages
         allowed by both this term and another
@@ -141,12 +140,13 @@ class Term(object):
                 return self._non_empty_term(
                     self.constraint.union(other.constraint), False
                 )
+
         elif self.is_positive() != other.is_positive():
             return self if self.is_positive() else other
         else:
-            return Term(Constraint(self.package, EmptyRange()))
+            return Term(Constraint(self.package, EmptyRange()), False)
 
-    def difference(self, other):  # type: (Term) -> Term
+    def difference(self, other):  # type: (Term) -> Optional[Term]
         """
         Returns a Term that represents packages
         allowed by this term and not by the other

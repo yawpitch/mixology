@@ -59,13 +59,13 @@ class Range(object):
 
         return low.union(high)
 
-    def is_empty(self):
+    def is_empty(self):  # type: () -> bool
         return False
 
-    def is_any(self):
+    def is_any(self):  # type: () -> bool
         return self._min is None and self._max is None
 
-    def allows_all(self, other):  # type: (Range) -> bool
+    def allows_all(self, other):  # type: (_Union[Range, Union]) -> bool
         if other.is_empty():
             return True
 
@@ -74,7 +74,7 @@ class Range(object):
 
         return not other.allows_lower(self) and not other.allows_higher(self)
 
-    def allows_any(self, other):  # type: (Range) -> bool
+    def allows_any(self, other):  # type: (_Union[Range, Union]) -> bool
         if other.is_empty():
             return False
 
@@ -83,7 +83,7 @@ class Range(object):
 
         return not other.is_strictly_lower(self) and not other.is_strictly_higher(self)
 
-    def intersect(self, other):  # type: (Range) -> Range
+    def intersect(self, other):  # type: (_Union[Range, Union]) -> _Union[Range, Union]
         if other.is_empty():
             return other
 
@@ -132,7 +132,7 @@ class Range(object):
             intersect_min, intersect_max, intersect_include_min, intersect_include_max
         )
 
-    def union(self, other):  # type: (Range) -> _Union[Range, Union]
+    def union(self, other):  # type: (_Union[Range, Union]) -> _Union[Range, Union]
         if isinstance(other, Union):
             return other.union(self)
 
@@ -419,13 +419,13 @@ class EmptyRange(Range):
             return NotImplemented
         return other.is_empty()
 
-    def intersect(self, other):  # type: (Range) -> Range
+    def intersect(self, other):  # type: (_Union[Range, Union]) -> Range
         return self
 
-    def allows_all(self, other):  # type: (Range) -> bool
+    def allows_all(self, other):  # type: (_Union[Range, Union]) -> bool
         return other.is_empty()
 
-    def allows_any(self, other):  # type: (Range) -> bool
+    def allows_any(self, other):  # type: (_Union[Range, Union]) -> bool
         return other.is_empty()
 
     def is_single_version(self):  # type: () -> bool

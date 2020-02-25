@@ -14,7 +14,7 @@ class Constraint(object):
 
     def __init__(
         self, package, constraint
-    ):  # type: (Hashable, Constraint) -> None
+    ):  # type: (Hashable, _Union[Range, Union]) -> None
         self._package = package
         self._constraint = constraint
 
@@ -23,16 +23,17 @@ class Constraint(object):
         return self._package
 
     @property
-    def constraint(self):  # type: () -> Constraint
+    def constraint(self):  # type: () -> _Union[Range, Union]
         return self._constraint
 
     @property
     def inverse(self):  # type: () -> Constraint
+        assert isinstance(self.constraint, Range)
         new_constraint = self.constraint.inverse
-
         return self.__class__(self.package, new_constraint)
 
     def allows_all(self, other):  # type: (Constraint) -> bool
+        assert isinstance(other.constraint, (Range, Union))
         return self.constraint.allows_all(other.constraint)
 
     def allows_any(self, other):  # type: (Constraint) -> bool

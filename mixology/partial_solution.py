@@ -2,6 +2,8 @@ from typing import Any
 from typing import Dict
 from typing import Hashable
 from typing import List
+from typing import Optional
+from typing import Union as _Union
 
 from collections import OrderedDict
 
@@ -28,7 +30,7 @@ class PartialSolution:
         self._assignments = []  # type: List[Assignment]
 
         # The decisions made for each package.
-        self._decisions = OrderedDict()  # type: Dict[str, Hashable]
+        self._decisions = OrderedDict()  # type: Dict[Hashable, Any]
 
         # The intersection of all positive Assignments for each package, minus any
         # negative Assignments that refer to that package.
@@ -147,17 +149,20 @@ class PartialSolution:
         package = assignment.package
         old_positive = self._positive.get(package)
         if old_positive is not None:
-            self._positive[package] = old_positive.intersect(assignment)
-
+            intersect = old_positive.intersect(assignment)
+            if intersect is not None:
+                self._positive[package] = intersect
             return None
 
         ref = assignment.package
         negative_by_ref = self._negative.get(package)
         old_negative = None if negative_by_ref is None else negative_by_ref.get(ref)
+        term = None  # type: Optional[_Union[Term, Assignment]]
         if old_negative is None:
             term = assignment
         else:
             term = assignment.intersect(old_negative)
+        assert term is not None
 
         if term.is_positive():
             if package in self._negative:
@@ -175,7 +180,7 @@ class PartialSolution:
         Returns the first Assignment in this solution such that the sublist of
         assignments up to and including that entry collectively satisfies term.
         """
-        assigned_term = None  # type: Term
+        assigned_term = None  # type: Optional[Term]
 
         for assignment in self._assignments:
             if assignment.package != term.package:
@@ -196,6 +201,8 @@ class PartialSolution:
                 assigned_term = assignment
             else:
                 assigned_term = assigned_term.intersect(assignment)
+
+            assert assigned_term is not None
 
             # As soon as we have enough assignments to satisfy term, return them.
             if assigned_term.satisfies(term):

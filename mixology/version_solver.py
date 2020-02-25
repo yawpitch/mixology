@@ -157,12 +157,12 @@ class VersionSolver:
                 # If term is already contradicted by _solution, then
                 # incompatibility is contradicted as well and there's nothing new we
                 # can deduce from it.
-                return
+                return None
             elif relation == SetRelation.OVERLAPPING:
                 # If more than one term is inconclusive, we can't deduce anything about
                 # incompatibility.
                 if unsatisfied is not None:
-                    return
+                    return None
 
                 # If exactly one term in incompatibility is inconclusive, then it's
                 # almost satisfied and [term] is the unsatisfied term. We can add the
@@ -320,7 +320,7 @@ class VersionSolver:
     def _next_term_to_try(self):  # type: () -> Optional[Term]
         unsatisfied = self._solution.unsatisfied
         if not unsatisfied:
-            return
+            return None
 
         # Prefer packages with as few remaining versions as possible,
         # so that if a conflict is necessary it's forced quickly.
@@ -346,7 +346,7 @@ class VersionSolver:
         """
         term = self._next_term_to_try()
         if not term:
-            return
+            return None
 
         versions = self._source.versions_for(term.package, term.constraint.constraint)
         if not versions:

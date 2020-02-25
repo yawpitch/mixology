@@ -15,7 +15,7 @@ def check_solver_result(source, result=None, error=None, tries=None):
             if tries is not None:
                 assert solver.solution.attempted_solutions == tries
 
-            return
+            return None
 
         raise
 

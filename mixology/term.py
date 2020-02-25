@@ -170,7 +170,7 @@ class Term(object):
         self, constraint, is_positive
     ):  # type: (Constraint, bool) -> Optional[Term]
         if constraint.is_empty():
-            return
+            return None
 
         return Term(constraint, is_positive)
 

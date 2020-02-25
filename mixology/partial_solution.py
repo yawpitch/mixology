@@ -148,7 +148,7 @@ class PartialSolution:
         if old_positive is not None:
             self._positive[package] = old_positive.intersect(assignment)
 
-            return
+            return None
 
         ref = assignment.package
         negative_by_ref = self._negative.get(package)

@@ -3,7 +3,8 @@ from typing import Dict
 from typing import Hashable
 from typing import List
 
-from ._compat import OrderedDict
+from collections import OrderedDict
+
 from .assignment import Assignment
 from .constraint import Constraint
 from .incompatibility import Incompatibility

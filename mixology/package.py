@@ -14,7 +14,9 @@ class Package(object):
     def name(self):  # type: () -> str
         return self._name
 
-    def __eq__(self, other):  # type: () -> bool
+    def __eq__(self, other):  # type: (object) -> bool
+        if not isinstance(other, Package):
+            return NotImplemented
         return str(other) == self.name
 
     def __str__(self):  # type: () -> str
@@ -23,5 +25,5 @@ class Package(object):
     def __repr__(self):  # type: () -> str
         return 'Package("{}")'.format(self.name)
 
-    def __hash__(self):
+    def __hash__(self):  # type: () -> int
         return hash(self.name)

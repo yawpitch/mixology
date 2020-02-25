@@ -3,6 +3,7 @@ from typing import Generator
 from typing import Hashable
 from typing import List
 from typing import Optional
+from typing import Callable
 
 from .incompatibility_cause import ConflictCause
 from .incompatibility_cause import DependencyCause
@@ -56,7 +57,9 @@ class Incompatibility:
                 ref = term.package
 
                 if ref in by_ref:
-                    by_ref[ref] = by_ref[ref].intersect(term)
+                    intersect = by_ref[ref].intersect(term)
+                    if intersect is not None:
+                        by_ref[ref] = intersect
 
                     # If we have two terms that refer to the same package but have a null
                     # intersection, they're mutually exclusive, making this incompatibility
@@ -67,7 +70,7 @@ class Incompatibility:
                 else:
                     by_ref[ref] = term
 
-                new_terms = []
+                new_terms : List[Term] = []
                 for by_ref in by_name.values():
                     positive_terms = [
                         term for term in by_ref.values() if term.is_positive()
@@ -92,7 +95,7 @@ class Incompatibility:
         return self._cause
 
     @property
-    def external_incompatibilities(self):  # type: () -> Generator[Incompatibility]
+    def external_incompatibilities(self):  # type: () -> Generator[Incompatibility, None, None]
         """
         Returns all external incompatibilities in this incompatibility's
         derivation graph.
@@ -144,6 +147,7 @@ class Incompatibility:
             assert self._terms[0].package == Package.root()
 
             return "{} is {}".format(self._terms[0].package, self._terms[0].constraint)
+        return None 
 
     def __str__(self):
         cause_string = self.handle_cause()
@@ -232,12 +236,12 @@ class Incompatibility:
 
         buffer = [str(self)]
         if this_line is not None:
-            buffer.append(" " + this_line)
+            buffer.append(" " + str(this_line))
 
         buffer.append(" and {}".format(str(other)))
 
         if other_line is not None:
-            buffer.append(" " + other_line)
+            buffer.append(" " + str(other_line))
 
         return "\n".join(buffer)
 
@@ -425,10 +429,10 @@ class Incompatibility:
     def _terse(self, term, allow_every=False):  # type: (Term, bool) -> str
         return term.to_string(allow_every=allow_every)
 
-    def _single_term_where(self, callable):  # type: (callable) -> Optional[Term]
+    def _single_term_where(self, predicate):  # type: (Callable[[Term], bool]) -> Optional[Term]
         found = None
         for term in self._terms:
-            if not callable(term):
+            if not predicate(term):
                 continue
 
             if found is not None:

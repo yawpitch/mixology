@@ -14,7 +14,7 @@ class Constraint(object):
 
     def __init__(
         self, package, constraint
-    ):  # type: (Hashable, _Union[Range, Union]) -> None
+    ):  # type: (Hashable, Constraint) -> None
         self._package = package
         self._constraint = constraint
 
@@ -23,7 +23,7 @@ class Constraint(object):
         return self._package
 
     @property
-    def constraint(self):  # type: () -> _Union[Range, Union]
+    def constraint(self):  # type: () -> Constraint
         return self._constraint
 
     @property
@@ -80,13 +80,13 @@ class Constraint(object):
     def is_empty(self):  # type: () -> bool
         return self._constraint.is_empty()
 
-    def __eq__(self, other):  # type: (Constraint) -> bool
+    def __eq__(self, other):  # type: (object) -> bool
         if not isinstance(other, Constraint):
             return NotImplemented
 
         return other.package == self.package and other.constraint == self.constraint
 
-    def __hash__(self):
+    def __hash__(self):  # type () -> int
         return hash(self.package) ^ hash(self.constraint)
 
     def to_string(self, allow_every=False):  # type: (bool) -> str

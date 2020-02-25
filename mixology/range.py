@@ -221,12 +221,11 @@ class Range(object):
         else:
             after = Range(other.max, self.max, not other.include_max, self.include_max)
 
-        if before is None and after is None:
-            return EmptyRange()
-
         if before is None:
+            if after is None:
+                return EmptyRange()
             return after
-
+        
         if after is None:
             return before
 
@@ -296,9 +295,9 @@ class Range(object):
             and self.include_max
         )
 
-    def __eq__(self, other):
+    def __eq__(self, other):  # type: (object) -> bool
         if not isinstance(other, Range):
-            return False
+            return NotImplemented
 
         return (
             self._min == other.min
@@ -415,7 +414,9 @@ class EmptyRange(Range):
     def is_any(self):  # type: () -> bool
         return False
 
-    def __eq__(self, other):  # type: (Range) -> bool
+    def __eq__(self, other):  # type: (object) -> bool
+        if not isinstance(other, Range):
+            return NotImplemented
         return other.is_empty()
 
     def intersect(self, other):  # type: (Range) -> Range

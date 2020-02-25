@@ -72,12 +72,8 @@ class VersionSolver:
 
             i += 1
 
-        logger.info("Version solving took {:.3f} seconds.\n")
-        logger.info(
-            "Tried {} solutions.".format(
-                time.time() - start, self._solution.attempted_solutions
-            )
-        )
+        logger.info("Version solving took {:.3f} seconds.\n".format(time.time() - start))
+        logger.info("Tried {} solutions.".format(self._solution.attempted_solutions))
 
         return SolverResult(
             self._solution.decisions, self._solution.attempted_solutions
@@ -88,6 +84,7 @@ class VersionSolver:
             return False
 
         next_package = self._choose_package_version()
+        assert next_package is not None
         self._propagate(next_package)
 
         if self.is_solved():
@@ -134,7 +131,7 @@ class VersionSolver:
 
     def _propagate_incompatibility(
         self, incompatibility
-    ):  # type: (Incompatibility) -> Union[str, _conflict, None]
+    ):  # type: (Incompatibility) -> Union[str, object, None]
         """
         If incompatibility is almost satisfied by _solution, adds the
         negation of the unsatisfied term to _solution.
@@ -252,6 +249,9 @@ class VersionSolver:
                             previous_satisfier_level,
                             self._solution.satisfier(difference.inverse).decision_level,
                         )
+
+            # We must have found a most_recent_satisfier
+            assert most_recent_satisfier is not None
 
             # If most_recent_identifier is the only satisfier left at its decision
             # level, or if it has no cause (indicating that it's a decision rather

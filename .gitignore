@@ -29,3 +29,6 @@ MANIFEST.in
 setup.py
 /docs/site/*
 poetry.lock
+
+# MyPy caches
+.mypy_cache

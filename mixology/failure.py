@@ -1,8 +1,8 @@
+from typing import Any
 from typing import Dict
 from typing import List
-from typing import Tuple
 from typing import Optional
-from typing import Any
+from typing import Tuple
 
 from .incompatibility import Incompatibility
 from .incompatibility_cause import ConflictCause

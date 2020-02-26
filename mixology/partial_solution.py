@@ -1,11 +1,10 @@
+from collections import OrderedDict
 from typing import Any
 from typing import Dict
 from typing import Hashable
 from typing import List
 from typing import Optional
 from typing import Union as _Union
-
-from collections import OrderedDict
 
 from .assignment import Assignment
 from .constraint import Constraint

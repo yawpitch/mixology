@@ -1,5 +1,6 @@
 from typing import Any
 
+
 Incompatibility = Any
 
 class IncompatibilityCause(Exception):

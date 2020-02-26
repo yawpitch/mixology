@@ -17,7 +17,9 @@ class Union(object):
         return self._ranges
 
     @classmethod
-    def of(cls, *ranges):  # type: (*_Union[mixology.range.Range, Union]) -> _Union[mixology.range.Range, Union]
+    def of(
+        cls, *ranges
+    ):  # type: (*_Union[mixology.range.Range, Union]) -> _Union[mixology.range.Range, Union]
         flattened = []  # type: List[mixology.range.Range]
         for constraint in ranges:
             if constraint.is_empty():
@@ -169,7 +171,6 @@ class Union(object):
 
             if state["current"] is None:
                 break
-
 
             if state["their_range"].is_strictly_lower(state["current"]):
                 if not their_next_range():

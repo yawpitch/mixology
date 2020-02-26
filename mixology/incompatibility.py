@@ -71,7 +71,7 @@ class Incompatibility:
                 else:
                     by_ref[ref] = term
 
-                new_terms : List[Term] = []
+                new_terms: List[Term] = []
                 for by_ref in by_name.values():
                     positive_terms = [
                         term for term in by_ref.values() if term.is_positive()
@@ -96,7 +96,9 @@ class Incompatibility:
         return self._cause
 
     @property
-    def external_incompatibilities(self):  # type: () -> Generator[Incompatibility, None, None]
+    def external_incompatibilities(
+        self,
+    ):  # type: () -> Generator[Incompatibility, None, None]
         """
         Returns all external incompatibilities in this incompatibility's
         derivation graph.
@@ -148,7 +150,7 @@ class Incompatibility:
             assert self._terms[0].package == Package.root()
 
             return "{} is {}".format(self._terms[0].package, self._terms[0].constraint)
-        return None 
+        return None
 
     def __str__(self):  # type: () -> str
         cause_string = self.handle_cause()
@@ -430,7 +432,9 @@ class Incompatibility:
     def _terse(self, term, allow_every=False):  # type: (Term, bool) -> str
         return term.to_string(allow_every=allow_every)
 
-    def _single_term_where(self, predicate):  # type: (Callable[[Term], bool]) -> Optional[Term]
+    def _single_term_where(
+        self, predicate
+    ):  # type: (Callable[[Term], bool]) -> Optional[Term]
         found = None
         for term in self._terms:
             if not predicate(term):

@@ -3,6 +3,7 @@ from typing import Any
 
 Incompatibility = Any
 
+
 class IncompatibilityCause(Exception):
     """
     The reason and Incompatibility's terms are incompatible.
@@ -40,7 +41,9 @@ class ConflictCause(IncompatibilityCause):
     during conflict resolution.
     """
 
-    def __init__(self, conflict, other):  # type: (Incompatibility, Incompatibility) -> None
+    def __init__(
+        self, conflict, other
+    ):  # type: (Incompatibility, Incompatibility) -> None
         self._conflict = conflict
         self._other = other
 

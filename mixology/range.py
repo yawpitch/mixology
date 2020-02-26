@@ -225,7 +225,7 @@ class Range(object):
             if after is None:
                 return EmptyRange()
             return after
-        
+
         if after is None:
             return before
 

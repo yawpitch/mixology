@@ -71,7 +71,7 @@ class Incompatibility:
                 else:
                     by_ref[ref] = term
 
-                new_terms: List[Term] = []
+                new_terms = []  # type: List[Term]
                 for by_ref in by_name.values():
                     positive_terms = [
                         term for term in by_ref.values() if term.is_positive()
